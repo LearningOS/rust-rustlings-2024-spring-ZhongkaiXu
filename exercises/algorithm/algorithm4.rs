@@ -51,6 +51,8 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
+        let mut v=Vec::new();
+        v.push(self.root)
     }
 
     // Search for a value in the BST

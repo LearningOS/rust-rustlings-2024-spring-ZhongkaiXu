@@ -2,13 +2,11 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
-use std::vec::*;
 
-#[derive(Debug)]
+#[derive(Debug,Clone,Copy)]
 struct Node<T> {
     val: T,
     next: Option<NonNull<Node<T>>>,
@@ -22,7 +20,7 @@ impl<T> Node<T> {
         }
     }
 }
-#[derive(Debug)]
+#[derive(Debug,Clone,Copy)]
 struct LinkedList<T> {
     length: u32,
     start: Option<NonNull<Node<T>>>,
@@ -43,6 +41,10 @@ impl<T> LinkedList<T> {
             end: None,
         }
     }
+}
+
+impl<T: PartialEq + Clone + PartialOrd> LinkedList<T> {
+    
 
     pub fn add(&mut self, obj: T) {
         let mut node = Box::new(Node::new(obj));
@@ -54,6 +56,10 @@ impl<T> LinkedList<T> {
         }
         self.end = node_ptr;
         self.length += 1;
+    }
+
+    pub fn get_len(&self) -> i32{
+        self.length.clone() as _
     }
 
     pub fn get(&mut self, index: i32) -> Option<&T> {
@@ -69,14 +75,36 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		let mut list = LinkedList::<T>::new();
+        let mut i=0;
+        let mut j=0;
+        let a_len = list_a.get_len();
+        let b_len = list_b.get_len();
+        while i!=a_len && j!=b_len {
+            let a = list_a.get(i as _).unwrap();
+            let b = list_b.get(j as _).unwrap();
+            if (*a)<(*b){
+                i+=1;
+                list.add(a.clone());
+            }else{
+                j+=1;
+                list.add(b.clone());
+            }
         }
+        while i!=a_len {
+            let v=list_a.get(i as _).unwrap();
+            list.add(v.clone());
+            i+=1;
+        }
+        while j!=b_len {
+            let t=list_b.get(j as _).unwrap();
+            list.add(t.clone());
+            j+=1;
+        }
+        list
 	}
 }
 
