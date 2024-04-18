@@ -5,7 +5,7 @@
 // I AM NOT DONE
 
 use std::collections::{HashMap, HashSet};
-use std::fmt;
+use std::{fmt, vec};
 #[derive(Debug, Clone)]
 pub struct NodeNotInGraph;
 impl fmt::Display for NodeNotInGraph {
@@ -30,6 +30,27 @@ impl Graph for UndirectedGraph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        // println!("func in undirectGraph");
+        let (src,dst,weight) = edge;
+        let src_node = src.to_string();
+        let dst_node = dst.to_string();
+        if let Some(node_vec) = self.adjacency_table_mutable().get_mut(&src_node){
+            //println!("add edge:{},{},{}",src_node,dst_node,weight);
+            node_vec.push((dst_node.clone(),weight));
+        }else{
+            self.adjacency_table_mutable().insert(src_node.clone(), vec![(dst_node.clone(),weight)]);
+            // self.adjacency_table_mutable().get_mut(&src_node).unwrap().push((dst_node.clone(),weight));
+            //println!("add edge:{},{},{}",src_node,dst_node,weight);
+        }
+
+        if let Some(node_vec) = self.adjacency_table_mutable().get_mut(&dst_node){
+            node_vec.push((src_node.clone(),weight));
+            //println!("add edge:{},{},{}",src_node,dst_node,weight);
+        }else{
+            self.adjacency_table_mutable().insert(dst_node.clone(), vec![(src_node.clone(),weight)]);
+            //self.adjacency_table_mutable().get_mut(&dst_node).unwrap().push((src_node.clone(),weight));
+            //println!("add edge:{},{},{}",src_node,dst_node,weight);
+        }
     }
 }
 pub trait Graph {
@@ -42,6 +63,7 @@ pub trait Graph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        //println!("func in graph");
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()

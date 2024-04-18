@@ -2,7 +2,8 @@
 	queue
 	This question requires you to use queues to implement the functionality of the stac
 */
-// I AM NOT DONE
+
+use std::borrow::BorrowMut;
 
 #[derive(Debug)]
 pub struct Queue<T> {
@@ -62,20 +63,29 @@ impl<T> myStack<T> {
     pub fn new() -> Self {
         Self {
 			//TODO
+            //q1 is always empty
 			q1:Queue::<T>::new(),
 			q2:Queue::<T>::new()
         }
     }
     pub fn push(&mut self, elem: T) {
         //TODO
+        self.q1.enqueue(elem);
+        while let Ok(v) = self.q2.dequeue()  {
+            self.q1.enqueue(v);
+        }
+        std::mem::swap(self.q1.borrow_mut(), self.q2.borrow_mut());
     }
     pub fn pop(&mut self) -> Result<T, &str> {
-        //TODO
-		Err("Stack is empty")
+        if let Ok(x)=self.q2.dequeue(){
+            return Ok(x);
+        }else{
+            return Err("Stack is empty");
+        }
     }
     pub fn is_empty(&self) -> bool {
 		//TODO
-        true
+        self.q2.is_empty()
     }
 }
 
